@@ -1,0 +1,21 @@
+{
+    "name": "laraveldaily/laravel-charts",
+    "description": "Create charts and reports from Laravel",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Povilas Korop",
+            "email": "povilas@laraveldaily.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "LaravelDaily\\LaravelCharts\\LaravelChartsServiceProvider"
+            ]
+        }
+    },
+    "version": "0.0.1"
+}
