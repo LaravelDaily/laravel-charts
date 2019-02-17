@@ -10,6 +10,11 @@
     ],
     "minimum-stability": "dev",
     "require": {},
+    "autoload": {
+        "psr-4": {
+            "LaravelDaily\\LaravelCharts\\": "src"
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [
@@ -17,5 +22,5 @@
             ]
         }
     },
-    "version": "0.0.1"
+    "version": "0.0.2"
 }
