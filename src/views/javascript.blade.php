@@ -11,7 +11,7 @@
       ],
 
       datasets: [{
-        label: '{{ $options['report_label'] }}',
+        label: '{{ $options['chart_title'] }}',
         data: [
             @foreach ($data as $group => $result)
             {!! $result !!},
