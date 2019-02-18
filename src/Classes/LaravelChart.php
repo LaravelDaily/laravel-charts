@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Validator;
 
 class LaravelChart {
 
-    private $options = [];
+    public $options = [];
     private $data = [];
 
     const GROUP_PERIODS = [
@@ -33,7 +33,7 @@ class LaravelChart {
                     if ($this->options['report_type'] == 'group_by_string') {
                         return $entry->{$this->options['group_by_field']};
                     }
-                    else if ($entry->created_at instanceof \Carbon\Carbon) {
+                    else if ($entry->{$this->options['group_by_field']} instanceof \Carbon\Carbon) {
                         return $entry->{$this->options['group_by_field']}
                             ->format(self::GROUP_PERIODS[$this->options['group_by_period']]);
                     } else {
@@ -53,27 +53,30 @@ class LaravelChart {
     private function validateOptions(array $options)
     {
         $rules = [
+            'chart_title' => 'required',
+            'report_type' => 'required|in:group_by_date,group_by_string',
             'model' => 'required|bail',
             'group_by_field' => 'required|bail',
             'group_by_period' => 'in:day,week,month,year|bail',
             'aggregate_function' => 'in:count,sum,avg|bail',
             'chart_type' => 'required|in:line,bar,pie|bail',
-            'chart_title' => 'required',
         ];
 
         $messages = [
             'required' => 'please specify :attribute option',
+            'report_type.in' => 'report_type option should contain one of these values - group_by_date/group_by_string',
             'group_by_period.in' => 'group_by option should contain one of these values - day/week/month/year',
             'aggregate_function.in' => 'number_function option should contain one of these values - count/sum/avg',
             'chart_type.in' => 'chart_type option should contain one of these values - line/bar/pie',
         ];
 
         $attributes = [
+            'chart_title' => 'chart_title',
+            'report_type' => 'report_type',
             'group_by_field' => 'group_by_field',
             'group_by_period' => 'group_by_period',
             'aggregate_function' => 'aggregate_function',
             'chart_type' => 'chart_type',
-            'chart_title' => 'chart_title',
         ];
 
         $validator = Validator::make($options, $rules, $messages, $attributes);

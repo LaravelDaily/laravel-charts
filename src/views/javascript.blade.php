@@ -16,6 +16,13 @@
             {!! $result !!},
             @endforeach
         ],
+        @if ($options['chart_type'] == 'pie')
+        backgroundColor: [
+            @foreach ($data as $group => $result)
+                'rgba({{ rand(0,255) }}, {{ rand(0,255) }}, {{ rand(0,255) }}, 0.2)',
+            @endforeach
+        ],
+        @endif
         borderWidth: 1
       }]
     },
