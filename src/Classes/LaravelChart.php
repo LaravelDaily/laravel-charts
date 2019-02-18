@@ -19,7 +19,7 @@ class LaravelChart {
     public function __construct($chart_options)
     {
         $this->options = $chart_options;
-        $this->options['chart_name'] = strtolower(str_slug($chart_options['chart_title']));
+        $this->options['chart_name'] = strtolower(str_slug($chart_options['chart_title'], '_'));
         $this->data = $this->prepareData();
     }
 
@@ -28,19 +28,22 @@ class LaravelChart {
         $this->validateOptions($this->options);
 
         try {
-            return $this->options['model']::orderBy($this->options['date_field'])->get()
+            return $this->options['model']::orderBy($this->options['group_by_field'])->get()
                 ->groupBy(function ($entry) {
-                    if ($entry->created_at instanceof \Carbon\Carbon) {
-                        return $entry->{$this->options['date_field']}
-                            ->format(self::GROUP_PERIODS[$this->options['group_by']]);
+                    if ($this->options['report_type'] == 'group_by_string') {
+                        return $entry->{$this->options['group_by_field']};
+                    }
+                    else if ($entry->created_at instanceof \Carbon\Carbon) {
+                        return $entry->{$this->options['group_by_field']}
+                            ->format(self::GROUP_PERIODS[$this->options['group_by_period']]);
                     } else {
                         return \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',
-                            $entry->{$this->options['date_field']})
-                            ->format(self::GROUP_PERIODS[$this->options['group_by']]);
+                            $entry->{$this->options['group_by_field']})
+                            ->format(self::GROUP_PERIODS[$this->options['group_by_period']]);
                     }
                 })
                 ->map(function ($entries) {
-                    return $entries->{$this->options['number_function']}($this->options['number_field']);
+                    return $entries->{$this->options['aggregate_function'] ?? 'count'}($this->options['aggregate_field'] ?? '');
                 });
         } catch (\Error $ex) {
             throw new \Exception('Laravel Charts error: ' . $ex->getMessage());
@@ -51,26 +54,24 @@ class LaravelChart {
     {
         $rules = [
             'model' => 'required|bail',
-            'date_field' => 'required|bail',
-            'group_by' => 'required|in:day,week,month,year|bail',
-            'number_function' => 'required|in:count,sum,avg|bail',
-            'number_field' => 'required|bail',
+            'group_by_field' => 'required|bail',
+            'group_by_period' => 'in:day,week,month,year|bail',
+            'aggregate_function' => 'in:count,sum,avg|bail',
             'chart_type' => 'required|in:line,bar,pie|bail',
             'chart_title' => 'required',
         ];
 
         $messages = [
             'required' => 'please specify :attribute option',
-            'group_by.in' => 'group_by option should contain one of these values - day/week/month/year',
-            'number_function.in' => 'number_function option should contain one of these values - count/sum/avg',
+            'group_by_period.in' => 'group_by option should contain one of these values - day/week/month/year',
+            'aggregate_function.in' => 'number_function option should contain one of these values - count/sum/avg',
             'chart_type.in' => 'chart_type option should contain one of these values - line/bar/pie',
         ];
 
         $attributes = [
-            'date_field' => 'date_field',
-            'group_by' => 'group_by',
-            'number_function' => 'number_function',
-            'number_field' => 'number_field',
+            'group_by_field' => 'group_by_field',
+            'group_by_period' => 'group_by_period',
+            'aggregate_function' => 'aggregate_function',
             'chart_type' => 'chart_type',
             'chart_title' => 'chart_title',
         ];
@@ -90,6 +91,11 @@ class LaravelChart {
     public function renderJs()
     {
         return view('laravelchart::javascript', ['options' => $this->options, 'data' => $this->data]);
+    }
+
+    public function renderChartJsLibrary()
+    {
+        return '<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>';
     }
 
 }

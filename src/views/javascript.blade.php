@@ -1,7 +1,6 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 <script>
   var ctx = document.getElementById("{{ $options['chart_name'] ?? 'myChart' }}");
-  var myChart = new Chart(ctx, {
+  var {{ $options['chart_name'] ?? 'myChart' }} = new Chart(ctx, {
     type: '{{ $options['chart_type'] ?? 'line' }}',
     data: {
       labels: [
