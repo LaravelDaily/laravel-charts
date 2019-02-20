@@ -32,7 +32,7 @@ class LaravelChart {
                 ->when(isset($this->options['filter_field']), function($query) {
                     if (isset($this->options['filter_days'])) {
                         return $query->where($this->options['filter_field'], '>=',
-                            now()->subDays($this->options['filter_days']));
+                            now()->subDays($this->options['filter_days'])->format('Y-m-d'));
                     } else if (isset($this->options['filter_period'])) {
                         switch ($this->options['filter_period']) {
                             case 'week': $start = date('Y-m-d', strtotime('last Monday')); break;
