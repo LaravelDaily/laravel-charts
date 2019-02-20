@@ -107,10 +107,16 @@ $chart_options = [
     'chart_type' => 'line',
     'report_type' => 'group_by_date',
     'model' => 'App\Transaction',
+
     'group_by_field' => 'transaction_date',
     'group_by_period' => 'day',
+
     'aggregate_function' => 'sum',
     'aggregate_field' => 'amount',
+    
+    'filter_field' => 'transaction_date',
+    'filter_days' => 30, // show only transactions for last 30 days
+    'filter_period' => 'week', // show only transactions for this week
 ];
 ```
 
@@ -122,6 +128,9 @@ $chart_options = [
 - `group_by_period` (optional, only for `group_by_date` report type) - possible values are "day", "week", "month", "year";
 - `aggregate_function` (optional) - you can view not only amount of records, but also their `SUM()` or `AVG()`. Possible values: "count" (default), "avg", "sum".
 - `aggregate_field` (optional) - see `aggregate_function` above, the name of the field to use in `SUM()` or `AVG()` functions. Irrelevant for `COUNT()`.
+- `filter_field` (optional) - show only data filtered by that datetime field (see below)
+- `filter_days` (optional) - see `filter_field` above - show only last `filter_days` days of that field. Example, last __30__ days by `created_at` field.
+- `filter_period` (optional) - another way to filter by field, show only record from last __week__ / __month__ / __year__. Possible values are "week", "month", "year".
 
 __Notice__: currently package is in early version, so these parameters may change in the future.
 
@@ -185,6 +194,8 @@ public function index()
         'group_by_field' => 'created_at',
         'group_by_period' => 'month',
         'chart_type' => 'bar',
+        'filter_field' => 'created_at',
+        'filter_days' => 30, // show only last 30 days
     ];
 
     $chart1 = new LaravelChart($chart_options);
@@ -196,6 +207,8 @@ public function index()
         'model' => 'App\User',
         'group_by_field' => 'name',
         'chart_type' => 'pie',
+        'filter_field' => 'created_at',
+        'filter_period' => 'month', // show users only registered this month
     ];
 
     $chart2 = new LaravelChart($chart_options);

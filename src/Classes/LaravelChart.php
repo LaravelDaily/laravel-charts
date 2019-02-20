@@ -28,7 +28,23 @@ class LaravelChart {
         $this->validateOptions($this->options);
 
         try {
-            return $this->options['model']::orderBy($this->options['group_by_field'])->get()
+            return $this->options['model']::orderBy($this->options['group_by_field'])
+                ->when(isset($this->options['filter_field']), function($query) {
+                    if (isset($this->options['filter_days'])) {
+                        return $query->where($this->options['filter_field'], '>=',
+                            now()->subDays($this->options['filter_days']));
+                    } else if (isset($this->options['filter_period'])) {
+                        switch ($this->options['filter_period']) {
+                            case 'week': $start = date('Y-m-d', strtotime('last Monday')); break;
+                            case 'month': $start = date('Y-m') . '-01'; break;
+                            case 'year': $start = date('Y') . '-01-01'; break;
+                        }
+                        if (isset($start)) {
+                            return $query->where($this->options['filter_field'], '>=', $start);
+                        }
+                    }
+                })
+                ->get()
                 ->groupBy(function ($entry) {
                     if ($this->options['report_type'] == 'group_by_string') {
                         return $entry->{$this->options['group_by_field']};
@@ -60,6 +76,8 @@ class LaravelChart {
             'group_by_period' => 'in:day,week,month,year|bail',
             'aggregate_function' => 'in:count,sum,avg|bail',
             'chart_type' => 'required|in:line,bar,pie|bail',
+            'filter_days' => 'integer',
+            'filter_period' => 'in:week,month,year',
         ];
 
         $messages = [
@@ -68,6 +86,7 @@ class LaravelChart {
             'group_by_period.in' => 'group_by option should contain one of these values - day/week/month/year',
             'aggregate_function.in' => 'number_function option should contain one of these values - count/sum/avg',
             'chart_type.in' => 'chart_type option should contain one of these values - line/bar/pie',
+            'filter_period.in' => 'filter_period option should contain one of these values - week/month/year',
         ];
 
         $attributes = [
@@ -77,6 +96,8 @@ class LaravelChart {
             'group_by_period' => 'group_by_period',
             'aggregate_function' => 'aggregate_function',
             'chart_type' => 'chart_type',
+            'filter_days' => 'filter_days',
+            'filter_period' => 'filter_period',
         ];
 
         $validator = Validator::make($options, $rules, $messages, $attributes);
