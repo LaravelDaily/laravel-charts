@@ -44,6 +44,7 @@ class LaravelChart {
                         }
                     }
                 })
+                ->whereNotNull($this->options['group_by_field'])
                 ->get()
                 ->groupBy(function ($entry) {
                     if ($this->options['report_type'] == 'group_by_string') {
