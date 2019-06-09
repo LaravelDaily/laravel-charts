@@ -28,6 +28,10 @@ class LaravelChart {
         $this->validateOptions($this->options);
 
         try {
+            if (!class_exists($this->options['model'])) {
+                return [];
+            }
+
             return $this->options['model']::orderBy($this->options['group_by_field'])
                 ->when(isset($this->options['filter_field']), function($query) {
                     if (isset($this->options['filter_days'])) {
