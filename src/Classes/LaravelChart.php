@@ -32,8 +32,7 @@ class LaravelChart {
                 return [];
             }
 
-            return $this->options['model']::orderBy($this->options['group_by_field'])
-                ->when(isset($this->options['filter_field']), function($query) {
+            return $this->options['model']::when(isset($this->options['filter_field']), function($query) {
                     if (isset($this->options['filter_days'])) {
                         return $query->where($this->options['filter_field'], '>=',
                             now()->subDays($this->options['filter_days'])->format('Y-m-d'));
@@ -48,11 +47,19 @@ class LaravelChart {
                         }
                     }
                 })
-                ->whereNotNull($this->options['group_by_field'])
                 ->get()
+                ->where($this->options['group_by_field'], '!=', '')
+                ->sortBy($this->options['group_by_field'])
                 ->groupBy(function ($entry) {
                     if ($this->options['report_type'] == 'group_by_string') {
                         return $entry->{$this->options['group_by_field']};
+                    }
+                    else if ($this->options['report_type'] == 'group_by_relationship') {
+                        if ($entry->{$this->options['relationship_name']}) {
+                        return $entry->{$this->options['relationship_name']}->{$this->options['group_by_field']};
+                        } else {
+                            return '';
+                        }
                     }
                     else if ($entry->{$this->options['group_by_field']} instanceof \Carbon\Carbon) {
                         return $entry->{$this->options['group_by_field']}
@@ -64,7 +71,7 @@ class LaravelChart {
                     }
                 })
                 ->map(function ($entries) {
-                    return $entries->{$this->options['aggregate_function'] ?? 'count'}($this->options['aggregate_field'] ?? '');
+                    return $entries->{$this->options['aggregate_function'] ?? 'count'}($this->options['aggregate_field'] ?? '');    
                 });
         } catch (\Error $ex) {
             throw new \Exception('Laravel Charts error: ' . $ex->getMessage());
@@ -75,7 +82,7 @@ class LaravelChart {
     {
         $rules = [
             'chart_title' => 'required',
-            'report_type' => 'required|in:group_by_date,group_by_string',
+            'report_type' => 'required|in:group_by_date,group_by_string,group_by_relationship',
             'model' => 'required|bail',
             'group_by_field' => 'required|bail',
             'group_by_period' => 'in:day,week,month,year|bail',
