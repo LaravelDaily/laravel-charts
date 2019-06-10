@@ -97,7 +97,8 @@ return view('dashboard', compact('chart'));
 Currently package support two types of charts/reports: 
 
 - `group_by_date` - amount of records from the same table, grouped by time period - day/week/month/year;
-- `group_by_string` - amount of records from the same table, grouped by any string field, like `name`
+- `group_by_string` - amount of records from the same table, grouped by any string field, like `name`;
+- `group_by_relationship` - amount of records from the same table, grouped by `belongsTo` relationship's field
 
 __Example with all options__
 
@@ -122,15 +123,39 @@ $chart_options = [
 
 - `chart_title` (required) - just a text title that will be shown as legend;
 - `chart_type` (required) - possible values: "line", "bar", "pie";
-- `report_type` (required) - see above, can be `group_by_date` or `group_by_string`;
+- `report_type` (required) - see above, can be `group_by_date`, `group_by_string` or `group_by_relationship`;
 - `model` (required) - name of Eloquent model, where to take the data from;
-- `group_by_field` (required) - name of database field that will be user in `group_by` clause;
+- `group_by_field` (required) - name of database field that will be used in `group_by` clause;
 - `group_by_period` (optional, only for `group_by_date` report type) - possible values are "day", "week", "month", "year";
+- `relationship_name` (optional, only for `group_by_relationship` report type) - the name of model's method that contains `belongsTo` relationship.
 - `aggregate_function` (optional) - you can view not only amount of records, but also their `SUM()` or `AVG()`. Possible values: "count" (default), "avg", "sum".
 - `aggregate_field` (optional) - see `aggregate_function` above, the name of the field to use in `SUM()` or `AVG()` functions. Irrelevant for `COUNT()`.
 - `filter_field` (optional) - show only data filtered by that datetime field (see below)
 - `filter_days` (optional) - see `filter_field` above - show only last `filter_days` days of that field. Example, last __30__ days by `created_at` field.
 - `filter_period` (optional) - another way to filter by field, show only record from last __week__ / __month__ / __year__. Possible values are "week", "month", "year".
+
+- - - - -
+
+## Example with relationship
+
+```
+$chart_options = [
+    'chart_title' => 'Transactions by user',
+    'chart_type' => 'line',
+    'report_type' => 'group_by_relationship',
+    'model' => 'App\Transaction',
+
+    'relationship_name' => 'user', // represents function user() on Transaction model
+    'group_by_field' => 'name', // users.name
+
+    'aggregate_function' => 'sum',
+    'aggregate_field' => 'amount',
+    
+    'filter_field' => 'transaction_date',
+    'filter_days' => 30, // show only transactions for last 30 days
+    'filter_period' => 'week', // show only transactions for this week
+];
+```
 
 __Notice__: currently package is in early version, so these parameters may change in the future.
 
