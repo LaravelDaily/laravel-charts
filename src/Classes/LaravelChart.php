@@ -32,23 +32,26 @@ class LaravelChart {
                 return [];
             }
 
-            return $this->options['model']::when(isset($this->options['filter_field']), function($query) {
-                    if (isset($this->options['filter_days'])) {
-                        return $query->where($this->options['filter_field'], '>=',
-                            now()->subDays($this->options['filter_days'])->format('Y-m-d'));
-                    } else if (isset($this->options['filter_period'])) {
-                        switch ($this->options['filter_period']) {
-                            case 'week': $start = date('Y-m-d', strtotime('last Monday')); break;
-                            case 'month': $start = date('Y-m') . '-01'; break;
-                            case 'year': $start = date('Y') . '-01-01'; break;
-                        }
-                        if (isset($start)) {
-                            return $query->where($this->options['filter_field'], '>=', $start);
-                        }
+            $collection = $this->options['model']::when(isset($this->options['filter_field']), function($query) {
+                if (isset($this->options['filter_days'])) {
+                    return $query->where($this->options['filter_field'], '>=',
+                        now()->subDays($this->options['filter_days'])->format('Y-m-d'));
+                } else if (isset($this->options['filter_period'])) {
+                    switch ($this->options['filter_period']) {
+                        case 'week': $start = date('Y-m-d', strtotime('last Monday')); break;
+                        case 'month': $start = date('Y-m') . '-01'; break;
+                        case 'year': $start = date('Y') . '-01-01'; break;
                     }
-                })
-                ->get()
-                ->where($this->options['group_by_field'], '!=', '')
+                    if (isset($start)) {
+                        return $query->where($this->options['filter_field'], '>=', $start);
+                    }
+                }
+            })
+                ->get();
+            if ($this->options['report_type'] != 'group_by_relationship') {
+                $collection->where($this->options['group_by_field'], '!=', '');
+            }
+            return $collection
                 ->sortBy($this->options['group_by_field'])
                 ->groupBy(function ($entry) {
                     if ($this->options['report_type'] == 'group_by_string') {
