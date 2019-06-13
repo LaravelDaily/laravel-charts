@@ -32,7 +32,7 @@ class LaravelChart {
                 return [];
             }
 
-            $collection = $this->options['model']::when(isset($this->options['filter_field']), function($query) {
+            $query = $this->options['model']::when(isset($this->options['filter_field']), function($query) {
                 if (isset($this->options['filter_days'])) {
                     return $query->where($this->options['filter_field'], '>=',
                         now()->subDays($this->options['filter_days'])->format('Y-m-d'));
@@ -46,11 +46,18 @@ class LaravelChart {
                         return $query->where($this->options['filter_field'], '>=', $start);
                     }
                 }
-            })
-                ->get();
+            });
+
+            if ($this->options['report_type'] == 'group_by_relationship') {
+                $query->with($this->options['relationship_name']);
+            }
+
+            $collection = $query->get();
+
             if ($this->options['report_type'] != 'group_by_relationship') {
                 $collection->where($this->options['group_by_field'], '!=', '');
             }
+
             return $collection
                 ->sortBy($this->options['group_by_field'])
                 ->groupBy(function ($entry) {
@@ -74,7 +81,7 @@ class LaravelChart {
                     }
                 })
                 ->map(function ($entries) {
-                    return $entries->{$this->options['aggregate_function'] ?? 'count'}($this->options['aggregate_field'] ?? '');    
+                    return $entries->{$this->options['aggregate_function'] ?? 'count'}($this->options['aggregate_field'] ?? '');
                 });
         } catch (\Error $ex) {
             throw new \Exception('Laravel Charts error: ' . $ex->getMessage());
