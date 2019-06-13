@@ -118,6 +118,7 @@ $chart_options = [
     'filter_field' => 'transaction_date',
     'filter_days' => 30, // show only transactions for last 30 days
     'filter_period' => 'week', // show only transactions for this week
+    'continuous_time' => true, // show continuous timeline including dates without data
 ];
 ```
 
@@ -133,6 +134,7 @@ $chart_options = [
 - `filter_field` (optional) - show only data filtered by that datetime field (see below)
 - `filter_days` (optional) - see `filter_field` above - show only last `filter_days` days of that field. Example, last __30__ days by `created_at` field.
 - `filter_period` (optional) - another way to filter by field, show only record from last __week__ / __month__ / __year__. Possible values are "week", "month", "year".
+- `continuous_time` (optional) - show all dates on chart, including dates without data.
 
 - - - - -
 

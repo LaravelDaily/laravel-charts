@@ -2,6 +2,8 @@
 
 namespace LaravelDaily\LaravelCharts\Classes;
 
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Validator;
 
 class LaravelChart {
@@ -58,7 +60,7 @@ class LaravelChart {
                 $collection->where($this->options['group_by_field'], '!=', '');
             }
 
-            return $collection
+            $data = $collection
                 ->sortBy($this->options['group_by_field'])
                 ->groupBy(function ($entry) {
                     if ($this->options['report_type'] == 'group_by_string') {
@@ -66,7 +68,7 @@ class LaravelChart {
                     }
                     else if ($this->options['report_type'] == 'group_by_relationship') {
                         if ($entry->{$this->options['relationship_name']}) {
-                        return $entry->{$this->options['relationship_name']}->{$this->options['group_by_field']};
+                            return $entry->{$this->options['relationship_name']}->{$this->options['group_by_field']};
                         } else {
                             return '';
                         }
@@ -83,6 +85,21 @@ class LaravelChart {
                 ->map(function ($entries) {
                     return $entries->{$this->options['aggregate_function'] ?? 'count'}($this->options['aggregate_field'] ?? '');
                 });
+
+            if (@$this->options['continuous_time']) {
+                $dates = $data->keys();
+                $interval = $this->options['group_by_period'] ?? 'day';
+                $newArr = [];
+                $period = CarbonPeriod::since($dates->first())->$interval()->until($dates->last())
+                    ->filter(function (Carbon $date) use ($data, &$newArr) {
+                        $key = $date->format('Y-m-d');
+                        $newArr[$key] = $data[$key] ?? 0;
+                    })
+                    ->toArray();
+                $data = $newArr;
+            }
+
+            return $data;
         } catch (\Error $ex) {
             throw new \Exception('Laravel Charts error: ' . $ex->getMessage());
         }
