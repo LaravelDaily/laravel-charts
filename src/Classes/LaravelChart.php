@@ -5,6 +5,7 @@ namespace LaravelDaily\LaravelCharts\Classes;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class LaravelChart {
 
@@ -21,7 +22,7 @@ class LaravelChart {
     public function __construct($chart_options)
     {
         $this->options = $chart_options;
-        $this->options['chart_name'] = strtolower(str_slug($chart_options['chart_title'], '_'));
+        $this->options['chart_name'] = strtolower(Str::slug($chart_options['chart_title'], '_'));
         $this->data = $this->prepareData();
     }
 
