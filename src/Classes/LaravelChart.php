@@ -49,6 +49,8 @@ class LaravelChart {
                         return $query->where($this->options['filter_field'], '>=', $start);
                     }
                 }
+                if(isset($this->options['range_date_start']) && isset($this->options['range_date_end'])){
+                    return $query->whereBetween($this->options['filter_field'], [$this->options['range_date_start'], $this->options['range_date_end']]);
             });
 
             if ($this->options['report_type'] == 'group_by_relationship') {
