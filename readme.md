@@ -2,8 +2,6 @@
 
 Package to generate Chart.js charts directly from Laravel/Blade, without interacting with JavaScript.
 
-__Notice__: Package is in early development, generating simple cases, so it's likely that syntax/parameters will change with future versions, use with cautions.
-
 ---
 
 ## Simple Usage
@@ -114,6 +112,9 @@ $chart_options = [
 
     'aggregate_function' => 'sum',
     'aggregate_field' => 'amount',
+    'aggregate_transform' => function($value) {
+        return round($value / 100, 2);
+    }
     
     'filter_field' => 'transaction_date',
     'filter_days' => 30, // show only transactions for last 30 days
@@ -131,6 +132,7 @@ $chart_options = [
 - `relationship_name` (optional, only for `group_by_relationship` report type) - the name of model's method that contains `belongsTo` relationship.
 - `aggregate_function` (optional) - you can view not only amount of records, but also their `SUM()` or `AVG()`. Possible values: "count" (default), "avg", "sum".
 - `aggregate_field` (optional) - see `aggregate_function` above, the name of the field to use in `SUM()` or `AVG()` functions. Irrelevant for `COUNT()`.
+- `aggregate_transform` (optional) - callback function for additional transformation of aggregate number
 - `filter_field` (optional) - show only data filtered by that datetime field (see below)
 - `filter_days` (optional) - see `filter_field` above - show only last `filter_days` days of that field. Example, last __30__ days by `created_at` field.
 - `filter_period` (optional) - another way to filter by field, show only record from last __week__ / __month__ / __year__. Possible values are "week", "month", "year".
@@ -160,8 +162,6 @@ $chart_options = [
     'filter_period' => 'week', // show only transactions for this week
 ];
 ```
-
-__Notice__: currently package is in early version, so these parameters may change in the future.
 
 ---
 
