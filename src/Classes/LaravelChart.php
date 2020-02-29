@@ -93,7 +93,11 @@ class LaravelChart {
                     }
                 })
                 ->map(function ($entries) {
-                    return $entries->{$this->options['aggregate_function'] ?? 'count'}($this->options['aggregate_field'] ?? '');
+                    $aggregate = $entries->{$this->options['aggregate_function'] ?? 'count'}($this->options['aggregate_field'] ?? '');
+                    if (@$this->options['aggregate_transform']) {
+                        $aggregate = $this->options['aggregate_transform']($aggregate);
+                    }
+                    return $aggregate;
                 });
 
             if (@$this->options['continuous_time']) {
