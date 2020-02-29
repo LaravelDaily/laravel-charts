@@ -92,7 +92,7 @@ return view('dashboard', compact('chart'));
 
 ## Available Reports and Options
 
-Currently package support two types of charts/reports: 
+Currently package support three types of charts/reports: 
 
 - `group_by_date` - amount of records from the same table, grouped by time period - day/week/month/year;
 - `group_by_string` - amount of records from the same table, grouped by any string field, like `name`;
