@@ -106,6 +106,10 @@ $chart_options = [
     'chart_type' => 'line',
     'report_type' => 'group_by_date',
     'model' => 'App\Transaction',
+    'conditions'            => [
+        ['name' => 'Food', 'condition' => 'category_id = 1', 'color' => 'black'],
+        ['name' => 'Transport', 'condition' => 'category_id = 2', 'color' => 'blue'],
+    ],
 
     'group_by_field' => 'transaction_date',
     'group_by_period' => 'day',
@@ -127,6 +131,7 @@ $chart_options = [
 - `chart_type` (required) - possible values: "line", "bar", "pie";
 - `report_type` (required) - see above, can be `group_by_date`, `group_by_string` or `group_by_relationship`;
 - `model` (required) - name of Eloquent model, where to take the data from;
+- `conditions` (optional, only for `line` chart type) - array of conditions (name + raw condition + color) for multiple datasets;
 - `group_by_field` (required) - name of database field that will be used in `group_by` clause;
 - `group_by_period` (optional, only for `group_by_date` report type) - possible values are "day", "week", "month", "year";
 - `relationship_name` (optional, only for `group_by_relationship` report type) - the name of model's method that contains `belongsTo` relationship.
