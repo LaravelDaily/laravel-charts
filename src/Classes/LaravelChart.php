@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 class LaravelChart {
 
     public $options = [];
-    private $data = [];
+    private $datasets = [];
 
     const GROUP_PERIODS = [
         'day' => 'Y-m-d',
@@ -23,7 +23,7 @@ class LaravelChart {
     {
         $this->options = $chart_options;
         $this->options['chart_name'] = strtolower(Str::slug($chart_options['chart_title'], '_'));
-        $this->data = $this->prepareData();
+        $this->datasets = $this->prepareData();
     }
 
     private function prepareData()
@@ -35,85 +35,97 @@ class LaravelChart {
                 return [];
             }
 
-            $query = $this->options['model']::when(isset($this->options['filter_field']), function($query) {
-                if (isset($this->options['filter_days'])) {
-                    return $query->where($this->options['filter_field'], '>=',
-                        now()->subDays($this->options['filter_days'])->format('Y-m-d'));
-                } else if (isset($this->options['filter_period'])) {
-                    switch ($this->options['filter_period']) {
-                        case 'week': $start = date('Y-m-d', strtotime('last Monday')); break;
-                        case 'month': $start = date('Y-m') . '-01'; break;
-                        case 'year': $start = date('Y') . '-01-01'; break;
-                    }
-                    if (isset($start)) {
-                        return $query->where($this->options['filter_field'], '>=', $start);
-                    }
-                }
-                if(isset($this->options['range_date_start']) && isset($this->options['range_date_end'])){
-                    return $query->whereBetween(
-                        $this->options['filter_field'], 
-                        [$this->options['range_date_start'], $this->options['range_date_end']]);
-                }
-            });
+            $datasets = [];
+            $conditions = $this->options['conditions'] ??
+                [['name' => '', 'condition' => '', 'color' => '']];
 
-            if ($this->options['report_type'] == 'group_by_relationship') {
-                $query->with($this->options['relationship_name']);
-            }
-
-            $collection = $query->get();
-
-            if ($this->options['report_type'] != 'group_by_relationship') {
-                $collection->where($this->options['group_by_field'], '!=', '');
-            }
-
-            $data = $collection
-                ->sortBy($this->options['group_by_field'])
-                ->groupBy(function ($entry) {
-                    if ($this->options['report_type'] == 'group_by_string') {
-                        return $entry->{$this->options['group_by_field']};
-                    }
-                    else if ($this->options['report_type'] == 'group_by_relationship') {
-                        if ($entry->{$this->options['relationship_name']}) {
-                            return $entry->{$this->options['relationship_name']}->{$this->options['group_by_field']};
-                        } else {
-                            return '';
+            foreach ($conditions as $condition) {
+                $query = $this->options['model']::when(isset($this->options['filter_field']), function($query) {
+                    if (isset($this->options['filter_days'])) {
+                        return $query->where($this->options['filter_field'], '>=',
+                            now()->subDays($this->options['filter_days'])->format('Y-m-d'));
+                    } else if (isset($this->options['filter_period'])) {
+                        switch ($this->options['filter_period']) {
+                            case 'week': $start = date('Y-m-d', strtotime('last Monday')); break;
+                            case 'month': $start = date('Y-m') . '-01'; break;
+                            case 'year': $start = date('Y') . '-01-01'; break;
+                        }
+                        if (isset($start)) {
+                            return $query->where($this->options['filter_field'], '>=', $start);
                         }
                     }
-                    else if ($entry->{$this->options['group_by_field']} instanceof \Carbon\Carbon) {
-                        return $entry->{$this->options['group_by_field']}
-                            ->format(self::GROUP_PERIODS[$this->options['group_by_period']]);
-                    } else {
-                        if ($entry->{$this->options['group_by_field']}) {
-                            return \Carbon\Carbon::createFromFormat($this->options['group_by_field_format'] ?? 'Y-m-d H:i:s',
-                                $entry->{$this->options['group_by_field']})
-                                ->format(self::GROUP_PERIODS[$this->options['group_by_period']]);
-                        } else {
-                            return '';
-                        }
+                    if(isset($this->options['range_date_start']) && isset($this->options['range_date_end'])){
+                        return $query->whereBetween(
+                            $this->options['filter_field'],
+                            [$this->options['range_date_start'], $this->options['range_date_end']]);
                     }
-                })
-                ->map(function ($entries) {
-                    $aggregate = $entries->{$this->options['aggregate_function'] ?? 'count'}($this->options['aggregate_field'] ?? '');
-                    if (@$this->options['aggregate_transform']) {
-                        $aggregate = $this->options['aggregate_transform']($aggregate);
-                    }
-                    return $aggregate;
                 });
 
-            if (@$this->options['continuous_time']) {
-                $dates = $data->keys();
-                $interval = $this->options['group_by_period'] ?? 'day';
-                $newArr = [];
-                $period = CarbonPeriod::since($dates->first())->$interval()->until($dates->last())
-                    ->filter(function (Carbon $date) use ($data, &$newArr) {
-                        $key = $date->format('Y-m-d');
-                        $newArr[$key] = $data[$key] ?? 0;
+                if ($this->options['chart_type'] == 'line' && $condition['condition'] != '') {
+                    $query->whereRaw($condition['condition']);
+                }
+
+                if ($this->options['report_type'] == 'group_by_relationship') {
+                    $query->with($this->options['relationship_name']);
+                }
+
+                $collection = $query->get();
+
+                if ($this->options['report_type'] != 'group_by_relationship') {
+                    $collection->where($this->options['group_by_field'], '!=', '');
+                }
+
+                $data = $collection
+                    ->sortBy($this->options['group_by_field'])
+                    ->groupBy(function ($entry) {
+                        if ($this->options['report_type'] == 'group_by_string') {
+                            return $entry->{$this->options['group_by_field']};
+                        }
+                        else if ($this->options['report_type'] == 'group_by_relationship') {
+                            if ($entry->{$this->options['relationship_name']}) {
+                                return $entry->{$this->options['relationship_name']}->{$this->options['group_by_field']};
+                            } else {
+                                return '';
+                            }
+                        }
+                        else if ($entry->{$this->options['group_by_field']} instanceof \Carbon\Carbon) {
+                            return $entry->{$this->options['group_by_field']}
+                                ->format(self::GROUP_PERIODS[$this->options['group_by_period']]);
+                        } else {
+                            if ($entry->{$this->options['group_by_field']}) {
+                                return \Carbon\Carbon::createFromFormat($this->options['group_by_field_format'] ?? 'Y-m-d H:i:s',
+                                    $entry->{$this->options['group_by_field']})
+                                    ->format(self::GROUP_PERIODS[$this->options['group_by_period']]);
+                            } else {
+                                return '';
+                            }
+                        }
                     })
-                    ->toArray();
-                $data = $newArr;
+                    ->map(function ($entries) {
+                        $aggregate = $entries->{$this->options['aggregate_function'] ?? 'count'}($this->options['aggregate_field'] ?? '');
+                        if (@$this->options['aggregate_transform']) {
+                            $aggregate = $this->options['aggregate_transform']($aggregate);
+                        }
+                        return $aggregate;
+                    });
+
+                if (@$this->options['continuous_time']) {
+                    $dates = $data->keys();
+                    $interval = $this->options['group_by_period'] ?? 'day';
+                    $newArr = [];
+                    $period = CarbonPeriod::since($dates->first())->$interval()->until($dates->last())
+                        ->filter(function (Carbon $date) use ($data, &$newArr) {
+                            $key = $date->format('Y-m-d');
+                            $newArr[$key] = $data[$key] ?? 0;
+                        })
+                        ->toArray();
+                    $data = $newArr;
+                }
+
+                $datasets[] = ['name' => $condition['name'], 'color' => $condition['color'], 'data' => $data];
             }
 
-            return $data;
+            return $datasets;
         } catch (\Error $ex) {
             throw new \Exception('Laravel Charts error: ' . $ex->getMessage());
         }
@@ -167,7 +179,7 @@ class LaravelChart {
 
     public function renderJs()
     {
-        return view('laravelchart::javascript', ['options' => $this->options, 'data' => $this->data]);
+        return view('laravelchart::javascript', ['options' => $this->options, 'datasets' => $this->datasets]);
     }
 
     public function renderChartJsLibrary()
