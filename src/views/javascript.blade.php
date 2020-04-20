@@ -4,9 +4,11 @@
         type: '{{ $options['chart_type'] ?? 'line' }}',
         data: {
             labels: [
-                @foreach ($datasets[0]['data'] as $group => $result)
-                    "{{ $group }}",
-                @endforeach
+                @if (count($datasets) > 0)
+                    @foreach ($datasets[0]['data'] as $group => $result)
+                        "{{ $group }}",
+                    @endforeach
+                @endif
             ],
         datasets: [
             @foreach ($datasets as $dataset)
