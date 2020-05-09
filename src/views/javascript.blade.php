@@ -39,6 +39,9 @@
         ]
     },
     options: {
+        tooltips: {
+    		mode: 'index'
+		},
         scales: {
             xAxes: [],
             yAxes: [{
