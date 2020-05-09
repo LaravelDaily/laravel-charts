@@ -41,7 +41,7 @@
     options: {
         tooltips: {
     	    mode: 'point'
-	},
+        },
         scales: {
             xAxes: [],
             yAxes: [{
