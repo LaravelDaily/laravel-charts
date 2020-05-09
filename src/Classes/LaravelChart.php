@@ -103,8 +103,8 @@ class LaravelChart {
                     })
                     ->map(function ($entries) {
                         if(isset($this->options['field_distinct'])) {
-							$entries=$entries->unique($this->options['field_distinct']);
-						}
+                            $entries = $entries->unique($this->options['field_distinct']);
+                        }
                         $aggregate = $entries->{$this->options['aggregate_function'] ?? 'count'}($this->options['aggregate_field'] ?? '');
                         if (@$this->options['aggregate_transform']) {
                             $aggregate = $this->options['aggregate_transform']($aggregate);
