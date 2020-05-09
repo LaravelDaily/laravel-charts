@@ -102,6 +102,9 @@ class LaravelChart {
                         }
                     })
                     ->map(function ($entries) {
+                        if(isset($this->options['field_distinct'])) {
+                            $entries = $entries->unique($this->options['field_distinct']);
+                        }
                         $aggregate = $entries->{$this->options['aggregate_function'] ?? 'count'}($this->options['aggregate_field'] ?? '');
                         if (@$this->options['aggregate_transform']) {
                             $aggregate = $this->options['aggregate_transform']($aggregate);
@@ -163,6 +166,7 @@ class LaravelChart {
             'chart_type' => 'chart_type',
             'filter_days' => 'filter_days',
             'filter_period' => 'filter_period',
+            'field_distinct' => 'field_distinct',
         ];
 
         $validator = Validator::make($options, $rules, $messages, $attributes);
