@@ -40,7 +40,7 @@
     },
     options: {
         tooltips: {
-    	    mode: 'point'
+            mode: 'point'
         },
         scales: {
             xAxes: [],
