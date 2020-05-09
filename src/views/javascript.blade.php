@@ -40,7 +40,7 @@
     },
     options: {
         tooltips: {
-    		mode: 'nearest'
+    		mode: 'point'
 		},
         scales: {
             xAxes: [],
