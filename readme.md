@@ -129,10 +129,12 @@ $chart_options = [
 
 - `chart_title` (required) - just a text title that will be shown as legend;
 - `chart_type` (required) - possible values: "line", "bar", "pie";
+- `chart_height` (optional) - custom height of the chart, default value: "150";
 - `report_type` (required) - see above, can be `group_by_date`, `group_by_string` or `group_by_relationship`;
 - `model` (required) - name of Eloquent model, where to take the data from;
 - `conditions` (optional, only for `line` chart type) - array of conditions (name + raw condition + color) for multiple datasets;
 - `group_by_field` (required) - name of database field that will be used in `group_by` clause;
+- `group_by_field_format` (optional), set the expected php date format. Examples: "d.m.Y", "d-m-Y";
 - `group_by_period` (optional, only for `group_by_date` report type) - possible values are "day", "week", "month", "year";
 - `relationship_name` (optional, only for `group_by_relationship` report type) - the name of model's method that contains `belongsTo` relationship.
 - `aggregate_function` (optional) - you can view not only amount of records, but also their `SUM()` or `AVG()`. Possible values: "count" (default), "avg", "sum".
