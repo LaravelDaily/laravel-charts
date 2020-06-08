@@ -24,5 +24,9 @@ class LaravelChartsServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadViewsFrom(__DIR__.'/views', 'laravelchart');
+
+        $this->publishes([
+            __DIR__.'/views' => base_path('resources/views/vendor/laravelchart'),
+        ]);
     }
 }

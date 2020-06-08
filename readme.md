@@ -70,7 +70,11 @@ __View File__
 composer require laraveldaily/laravel-charts
 ```
 
-No additional configuration or other parameters yet.
+You can publish the views if you need to tweak further
+
+```
+php artisan vendor:publish --provider="LaravelDaily\LaravelCharts\LaravelChartsServiceProvider"
+```
 
 ---
 
