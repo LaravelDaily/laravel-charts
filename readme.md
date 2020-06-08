@@ -133,7 +133,6 @@ $chart_options = [
 
 - `chart_title` (required) - just a text title that will be shown as legend;
 - `chart_type` (required) - possible values: "line", "bar", "pie";
-- `chart_height` (optional) - custom height of the chart, default value: "150";
 - `report_type` (required) - see above, can be `group_by_date`, `group_by_string` or `group_by_relationship`;
 - `model` (required) - name of Eloquent model, where to take the data from;
 - `conditions` (optional, only for `line` chart type) - array of conditions (name + raw condition + color) for multiple datasets;
