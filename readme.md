@@ -133,6 +133,7 @@ $chart_options = [
 - `model` (required) - name of Eloquent model, where to take the data from;
 - `conditions` (optional, only for `line` chart type) - array of conditions (name + raw condition + color) for multiple datasets;
 - `group_by_field` (required) - name of database field that will be used in `group_by` clause;
+- `group_by_field_format` (optional), set the expected php date format. Examples: "d.m.Y", "d-m-Y";
 - `group_by_period` (optional, only for `group_by_date` report type) - possible values are "day", "week", "month", "year";
 - `relationship_name` (optional, only for `group_by_relationship` report type) - the name of model's method that contains `belongsTo` relationship.
 - `aggregate_function` (optional) - you can view not only amount of records, but also their `SUM()` or `AVG()`. Possible values: "count" (default), "avg", "sum".
