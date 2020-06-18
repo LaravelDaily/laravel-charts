@@ -10,23 +10,35 @@ use Illuminate\Support\Str;
 class LaravelChart
 {
 
-    public $options = [];
-    private $datasets = [];
+    public $options     = [];
+    private $datasets   = [];
 
+    /**
+     * Group Periods
+     */
     const GROUP_PERIODS = [
-        'day' => 'Y-m-d',
-        'week' => 'Y-W',
+        'day'   => 'Y-m-d',
+        'week'  => 'Y-W',
         'month' => 'Y-m',
-        'year' => 'Y',
+        'year'  => 'Y',
     ];
 
+    /**
+     * LaravelChart constructor.
+     * @param $chart_options
+     * @throws \Exception
+     */
     public function __construct($chart_options)
     {
-        $this->options = $chart_options;
-        $this->options['chart_name'] = strtolower(Str::slug($chart_options['chart_title'], '_'));
-        $this->datasets = $this->prepareData();
+        $this->options                  = $chart_options;
+        $this->options['chart_name']    = strtolower(Str::slug($chart_options['chart_title'], '_'));
+        $this->datasets                 = $this->prepareData();
     }
 
+    /**
+     * @return array
+     * @throws \Exception
+     */
     private function prepareData()
     {
         $this->validateOptions($this->options);
@@ -42,11 +54,12 @@ class LaravelChart
 
             foreach ($conditions as $condition) {
                 $query = $this->options['model']::when(isset($this->options['filter_field']), function ($query) {
+
                     if (isset($this->options['filter_days'])) {
                         return $query->where(
                             $this->options['filter_field'],
                             '>=',
-                            now()->subDays($this->options['filter_days'])->format('Y-m-d')
+                            now()->subDays($this->options['filter_days'])->format($this->options['date_format_filter_days'] ?? 'Y-m-d')
                         );
                     } else if (isset($this->options['filter_period'])) {
                         switch ($this->options['filter_period']) {
@@ -71,6 +84,10 @@ class LaravelChart
                         );
                     }
                 });
+
+                if (isset($this->options['where_raw']) && $this->options['where_raw'] != '') {
+                    $query->whereRaw($this->options['where_raw']);
+                }
 
                 if ($this->options['chart_type'] == 'line' && $condition['condition'] != '') {
                     $query->whereRaw($condition['condition']);
@@ -100,14 +117,14 @@ class LaravelChart
                                 }
                             } else if ($entry->{$this->options['group_by_field']} instanceof \Carbon\Carbon) {
                                 return $entry->{$this->options['group_by_field']}
-                                    ->format(self::GROUP_PERIODS[$this->options['group_by_period']]);
+                                    ->format($this->options['date_format'] ?? self::GROUP_PERIODS[$this->options['group_by_period']]);
                             } else {
                                 if ($entry->{$this->options['group_by_field']}) {
                                     return \Carbon\Carbon::createFromFormat(
                                         $this->options['group_by_field_format'] ?? 'Y-m-d H:i:s',
                                         $entry->{$this->options['group_by_field']}
                                     )
-                                        ->format(self::GROUP_PERIODS[$this->options['group_by_period']]);
+                                        ->format($this->options['date_format'] ?? self::GROUP_PERIODS[$this->options['group_by_period']]);
                                 } else {
                                     return '';
                                 }
@@ -135,7 +152,7 @@ class LaravelChart
                     if (!is_null($dates->first()) or !is_null($dates->last())) {
                         $period = CarbonPeriod::since($dates->first())->$interval()->until($dates->last())
                             ->filter(function (Carbon $date) use ($data, &$newArr) {
-                                $key = $date->format('Y-m-d');
+                                $key = $date->format($this->options['date_format'] ?? 'Y-m-d');
                                 $newArr[$key] = $data[$key] ?? 0;
                             })
                             ->toArray();
@@ -152,18 +169,22 @@ class LaravelChart
         }
     }
 
+    /**
+     * @param array $options
+     * @throws \Exception
+     */
     private function validateOptions(array $options)
     {
         $rules = [
-            'chart_title' => 'required',
-            'report_type' => 'required|in:group_by_date,group_by_string,group_by_relationship',
-            'model' => 'required|bail',
-            'group_by_field' => 'required|bail',
-            'group_by_period' => 'in:day,week,month,year|bail',
-            'aggregate_function' => 'in:count,sum,avg|bail',
-            'chart_type' => 'required|in:line,bar,pie|bail',
-            'filter_days' => 'integer',
-            'filter_period' => 'in:week,month,year',
+            'chart_title'           => 'required',
+            'report_type'           => 'required|in:group_by_date,group_by_string,group_by_relationship',
+            'model'                 => 'required|bail',
+            'group_by_field'        => 'required|bail',
+            'group_by_period'       => 'in:day,week,month,year|bail',
+            'aggregate_function'    => 'in:count,sum,avg|bail',
+            'chart_type'            => 'required|in:line,bar,pie|bail',
+            'filter_days'           => 'integer',
+            'filter_period'         => 'in:week,month,year',
         ];
 
         $messages = [
@@ -176,15 +197,15 @@ class LaravelChart
         ];
 
         $attributes = [
-            'chart_title' => 'chart_title',
-            'report_type' => 'report_type',
-            'group_by_field' => 'group_by_field',
-            'group_by_period' => 'group_by_period',
-            'aggregate_function' => 'aggregate_function',
-            'chart_type' => 'chart_type',
-            'filter_days' => 'filter_days',
-            'filter_period' => 'filter_period',
-            'field_distinct' => 'field_distinct',
+            'chart_title'           => 'chart_title',
+            'report_type'           => 'report_type',
+            'group_by_field'        => 'group_by_field',
+            'group_by_period'       => 'group_by_period',
+            'aggregate_function'    => 'aggregate_function',
+            'chart_type'            => 'chart_type',
+            'filter_days'           => 'filter_days',
+            'filter_period'         => 'filter_period',
+            'field_distinct'        => 'field_distinct',
         ];
 
         $validator = Validator::make($options, $rules, $messages, $attributes);
@@ -194,16 +215,25 @@ class LaravelChart
         }
     }
 
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function renderHtml()
     {
         return view('laravelchart::html', ['options' => $this->options]);
     }
 
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function renderJs()
     {
         return view('laravelchart::javascript', ['options' => $this->options, 'datasets' => $this->datasets]);
     }
 
+    /**
+     * @return string
+     */
     public function renderChartJsLibrary()
     {
         return '<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>';

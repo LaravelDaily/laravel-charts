@@ -1,1 +1,1 @@
-<canvas id="{{ $options['chart_name'] ?? 'myChart' }}"></canvas>
+<canvas id="{{ $options['chart_name'] ?? 'myChart' }}" class="{{ $options['style_class'] ?? '' }}"></canvas>
