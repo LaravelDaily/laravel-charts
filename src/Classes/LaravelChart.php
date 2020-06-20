@@ -120,8 +120,7 @@ class LaravelChart
                                     ->format($this->options['date_format'] ?? self::GROUP_PERIODS[$this->options['group_by_period']]);
                             } else {
                                 if ($entry->{$this->options['group_by_field']}) {
-                                    return \Carbon\Carbon::createFromFormat(
-                                        $this->options['group_by_field_format'] ?? 'Y-m-d H:i:s',
+                                    return \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',
                                         $entry->{$this->options['group_by_field']}
                                     )
                                         ->format($this->options['date_format'] ?? self::GROUP_PERIODS[$this->options['group_by_period']]);
