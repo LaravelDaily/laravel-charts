@@ -42,6 +42,7 @@
         tooltips: {
             mode: 'point'
         },
+        height: '{{ $options['chart_height'] ?? "300px" }}',
         scales: {
             xAxes: [],
             yAxes: [{
@@ -49,7 +50,7 @@
                     beginAtZero:true
                 }
             }]
-        }
+        },
     }
     });
 </script>

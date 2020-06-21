@@ -133,7 +133,6 @@ $chart_options = [
 - `model` (required) - name of Eloquent model, where to take the data from;
 - `conditions` (optional, only for `line` chart type) - array of conditions (name + raw condition + color) for multiple datasets;
 - `group_by_field` (required) - name of database field that will be used in `group_by` clause;
-- `group_by_field_format` (optional), set the expected php date format. Examples: "d.m.Y", "d-m-Y";
 - `group_by_period` (optional, only for `group_by_date` report type) - possible values are "day", "week", "month", "year";
 - `relationship_name` (optional, only for `group_by_relationship` report type) - the name of model's method that contains `belongsTo` relationship.
 - `aggregate_function` (optional) - you can view not only amount of records, but also their `SUM()` or `AVG()`. Possible values: "count" (default), "avg", "sum".
@@ -146,6 +145,11 @@ $chart_options = [
 - `range_date_start` (optional) - show data in from a date range by `filter_field`, this is the start date.
 - `range_date_end` (optional) - show data in from a date range by `filter_field`, this is the end date.
 - `field_distinct` (optional) - field name required, it will apply a distinct(fieldname)
+- `style_class` (optional) - add class css in canvas
+- `date_format` (optional) - add the date format, by default: American format Y-m-d
+- `where_raw` (optional) - Condition in multiple consultation situations
+- `chart_height` (optional) - add the height in options, default 300px
+- `date_format_filter_days` (optional) -add the date format for Filter days
 
 - - - - -
 
