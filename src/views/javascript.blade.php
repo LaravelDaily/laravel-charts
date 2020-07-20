@@ -43,14 +43,16 @@
             mode: 'point'
         },
         height: '{{ $options['chart_height'] ?? "300px" }}',
-        scales: {
-            xAxes: [],
-            yAxes: [{
-                ticks: {
-                    beginAtZero:true
-                }
-            }]
-        },
+        @if ($options['chart_type'] != 'pie')
+            scales: {
+                xAxes: [],
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }]
+            },
+        @endif
     }
     });
 </script>
