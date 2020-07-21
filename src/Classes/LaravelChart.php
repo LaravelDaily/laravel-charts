@@ -44,7 +44,7 @@ class LaravelChart
         $this->validateOptions($this->options);
 
         try {
-            if ((is_string($this->options['model']) && !class_exists($this->options['model'])) && !$this->options['model'] instanceof \Illuminate\Database\Eloquent\Model) {
+            if (!class_exists($this->options['model'])) {
                 return [];
             }
 
@@ -53,7 +53,7 @@ class LaravelChart
                 [['name' => '', 'condition' => '', 'color' => '']];
 
             foreach ($conditions as $condition) {
-                $query = $this->options['model']->when(isset($this->options['filter_field']), function ($query) {
+                $query = $this->options['model']::when(isset($this->options['filter_field']), function ($query) {
 
                     if (isset($this->options['filter_days'])) {
                         return $query->where(
