@@ -50,7 +50,7 @@ class LaravelChart
 
             $datasets = [];
             $conditions = $this->options['conditions'] ??
-                [['name' => '', 'condition' => '', 'color' => '']];
+                [['name' => '', 'condition' => "", 'color' => '']];
 
             foreach ($conditions as $condition) {
                 $query = $this->options['model']::when(isset($this->options['filter_field']), function ($query) {
