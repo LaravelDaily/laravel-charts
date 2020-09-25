@@ -1,7 +1,7 @@
 ## Laravel Charts
 
 Package to generate Chart.js charts directly from Laravel/Blade, without interacting with JavaScript.
-NOTE: From Laravel 8, all its model are placed in a folder called Model (App\Models\)
+NOTE: From Laravel 8, all its models are placed in a folder called Models (App\Models\)
 
 ---
 
