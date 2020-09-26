@@ -2,6 +2,8 @@
 
 Package to generate Chart.js charts directly from Laravel/Blade, without interacting with JavaScript.
 
+### NOTE: From Laravel 8, all its models are placed in a folder called Models (App\Models\)
+
 ---
 
 ## Simple Usage
@@ -20,7 +22,7 @@ use LaravelDaily\LaravelCharts\Classes\LaravelChart;
 $chart_options = [
     'chart_title' => 'Users by months',
     'report_type' => 'group_by_date',
-    'model' => 'App\User',
+    'model' => 'App\Models\User',
     'group_by_field' => 'created_at',
     'group_by_period' => 'month',
     'chart_type' => 'bar',
@@ -105,7 +107,7 @@ $chart_options = [
     'chart_title' => 'Transactions by dates',
     'chart_type' => 'line',
     'report_type' => 'group_by_date',
-    'model' => 'App\Transaction',
+    'model' => 'App\Models\Transaction',
     'conditions'            => [
         ['name' => 'Food', 'condition' => 'category_id = 1', 'color' => 'black'],
         ['name' => 'Transport', 'condition' => 'category_id = 2', 'color' => 'blue'],
@@ -160,7 +162,7 @@ $chart_options = [
     'chart_title' => 'Transactions by user',
     'chart_type' => 'line',
     'report_type' => 'group_by_relationship',
-    'model' => 'App\Transaction',
+    'model' => 'App\Models\Transaction',
 
     'relationship_name' => 'user', // represents function user() on Transaction model
     'group_by_field' => 'name', // users.name
@@ -230,7 +232,7 @@ public function index()
     $chart_options = [
         'chart_title' => 'Users by months',
         'report_type' => 'group_by_date',
-        'model' => 'App\User',
+        'model' => 'App\Models\User',
         'group_by_field' => 'created_at',
         'group_by_period' => 'month',
         'chart_type' => 'bar',
@@ -244,7 +246,7 @@ public function index()
     $chart_options = [
         'chart_title' => 'Users by names',
         'report_type' => 'group_by_string',
-        'model' => 'App\User',
+        'model' => 'App\Models\User',
         'group_by_field' => 'name',
         'chart_type' => 'pie',
         'filter_field' => 'created_at',
@@ -256,7 +258,7 @@ public function index()
     $chart_options = [
         'chart_title' => 'Transactions by dates',
         'report_type' => 'group_by_date',
-        'model' => 'App\Transaction',
+        'model' => 'App\Models\Transaction',
         'group_by_field' => 'transaction_date',
         'group_by_period' => 'day',
         'aggregate_function' => 'sum',
