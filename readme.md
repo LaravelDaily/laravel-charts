@@ -2,8 +2,6 @@
 
 Package to generate Chart.js charts directly from Laravel/Blade, without interacting with JavaScript.
 
-### NOTE: From Laravel 8, all its models are placed in a folder called Models (App\Models\)
-
 ---
 
 ## Simple Usage
@@ -99,6 +97,9 @@ Currently package support three types of charts/reports:
 - `group_by_date` - amount of records from the same table, grouped by time period - day/week/month/year;
 - `group_by_string` - amount of records from the same table, grouped by any string field, like `name`;
 - `group_by_relationship` - amount of records from the same table, grouped by `belongsTo` relationship's field
+
+
+### NOTE: From Laravel 8, all its models are placed in a folder called Models (App\Models\)
 
 __Example with all options__
 
