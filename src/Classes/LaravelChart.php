@@ -97,7 +97,7 @@ class LaravelChart
                     $query->with($this->options['relationship_name']);
                 }
 
-                if($this->options['withoutGlobalScopes']){
+                if(isset($this->options['withoutGlobalScopes']) && $this->options['withoutGlobalScopes']){
                     $collection = $query->withoutGlobalScopes()->get();
                 } else {
                     $collection = $query->get();
