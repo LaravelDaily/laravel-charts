@@ -97,7 +97,11 @@ class LaravelChart
                     $query->with($this->options['relationship_name']);
                 }
 
-                $collection = $query->get();
+                if(isset($this->options['withoutGlobalScopes']) && $this->options['withoutGlobalScopes']){
+                    $collection = $query->withoutGlobalScopes()->get();
+                } else {
+                    $collection = $query->get();
+                }
 
                 if ($this->options['report_type'] != 'group_by_relationship') {
                     $collection->where($this->options['group_by_field'], '!=', '');

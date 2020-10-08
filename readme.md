@@ -153,6 +153,7 @@ $chart_options = [
 - `where_raw` (optional) - Condition in multiple consultation situations
 - `chart_height` (optional) - add the height in options, default 300px
 - `date_format_filter_days` (optional) -add the date format for Filter days
+- `withoutGlobalScopes` (optional) -removes global scope restriction from queried model
 
 - - - - -
 
