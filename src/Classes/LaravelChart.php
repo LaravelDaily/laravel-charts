@@ -97,6 +97,14 @@ class LaravelChart
                     $query->with($this->options['relationship_name']);
                 }
 
+                if (isset($this->options['with_trashed']) && $this->options['with_trashed']) {
+                    $query->withTrashed();
+                }
+
+                if (isset($this->options['only_trashed']) && $this->options['only_trashed']) {
+                    $query->onlyTrashed();
+                }
+
                 if(isset($this->options['withoutGlobalScopes']) && $this->options['withoutGlobalScopes']){
                     $collection = $query->withoutGlobalScopes()->get();
                 } else {
