@@ -110,8 +110,8 @@ $chart_options = [
     'report_type' => 'group_by_date',
     'model' => 'App\Models\Transaction',
     'conditions'            => [
-        ['name' => 'Food', 'condition' => 'category_id = 1', 'color' => 'black'],
-        ['name' => 'Transport', 'condition' => 'category_id = 2', 'color' => 'blue'],
+        ['name' => 'Food', 'condition' => 'category_id = 1', 'color' => 'black', 'fill' => true],
+        ['name' => 'Transport', 'condition' => 'category_id = 2', 'color' => 'blue', 'fill' => true],
     ],
 
     'group_by_field' => 'transaction_date',
