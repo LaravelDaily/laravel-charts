@@ -30,9 +30,11 @@ class LaravelChart
      */
     public function __construct($chart_options)
     {
-        $this->options                  = $chart_options;
-        $this->options['chart_name']    = strtolower(Str::slug($chart_options['chart_title'], '_'));
-        $this->datasets                 = $this->prepareData();
+        foreach (func_get_args() as $arg) {
+            $this->options = $arg;
+            $this->options['chart_name'] = strtolower(Str::slug($arg['chart_title'], '_'));
+            $this->datasets[] = $this->prepareData();
+        }
     }
 
     /**
@@ -105,7 +107,7 @@ class LaravelChart
                     $query->onlyTrashed();
                 }
 
-                if(isset($this->options['withoutGlobalScopes']) && $this->options['withoutGlobalScopes']){
+                if (isset($this->options['withoutGlobalScopes']) && $this->options['withoutGlobalScopes']) {
                     $collection = $query->withoutGlobalScopes()->get();
                 } else {
                     $collection = $query->get();
@@ -132,12 +134,14 @@ class LaravelChart
                                     ->format($this->options['date_format'] ?? self::GROUP_PERIODS[$this->options['group_by_period']]);
                             } else {
                                 if ($entry->{$this->options['group_by_field']} && $this->options['group_by_field_format']) {
-                                    return \Carbon\Carbon::createFromFormat($this->options['group_by_field_format'],
+                                    return \Carbon\Carbon::createFromFormat(
+                                        $this->options['group_by_field_format'],
                                         $entry->{$this->options['group_by_field']}
                                     )
                                         ->format($this->options['date_format'] ?? self::GROUP_PERIODS[$this->options['group_by_period']]);
-                                }else if ($entry->{$this->options['group_by_field']}) {
-                                    return \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',
+                                } else if ($entry->{$this->options['group_by_field']}) {
+                                    return \Carbon\Carbon::createFromFormat(
+                                        'Y-m-d H:i:s',
                                         $entry->{$this->options['group_by_field']}
                                     )
                                         ->format($this->options['date_format'] ?? self::GROUP_PERIODS[$this->options['group_by_period']]);
@@ -176,7 +180,7 @@ class LaravelChart
                     }
                 }
 
-                $datasets[] = ['name' => $condition['name'], 'color' => $condition['color'], 'fill' => $condition['fill'], 'data' => $data];
+                $datasets = ['name' => $this->options['chart_title'], 'color' => $condition['color'], 'fill' => $condition['fill'], 'data' => $data];
             }
 
             return $datasets;
