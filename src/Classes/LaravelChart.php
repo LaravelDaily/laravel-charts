@@ -50,7 +50,7 @@ class LaravelChart
                 return [];
             }
 
-            $datasets = [];
+            $dataset = [];
             $conditions = $this->options['conditions'] ??
                 [['name' => '', 'condition' => "", 'color' => '', 'fill' => '']];
 
@@ -180,10 +180,10 @@ class LaravelChart
                     }
                 }
 
-                $datasets = ['name' => $this->options['chart_title'], 'color' => $condition['color'], 'fill' => $condition['fill'], 'data' => $data];
+                $dataset = ['name' => $this->options['chart_title'], 'color' => $condition['color'], 'fill' => $condition['fill'], 'data' => $data];
             }
 
-            return $datasets;
+            return $dataset;
         } catch (\Error $ex) {
             throw new \Exception('Laravel Charts error: ' . $ex->getMessage());
         }
