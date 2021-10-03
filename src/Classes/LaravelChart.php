@@ -55,6 +55,10 @@ class LaravelChart
                 [['name' => '', 'condition' => "", 'color' => '', 'fill' => '']];
 
             foreach ($conditions as $condition) {
+                if (isset($this->options['top_results']) && !is_int($this->options['top_results'])) {
+                    throw new \Exception('Top results value should be integer');
+                }
+
                 $query = $this->options['model']::when(isset($this->options['filter_field']), function ($query) {
 
                     if (isset($this->options['filter_days'])) {
@@ -159,6 +163,12 @@ class LaravelChart
                                 $aggregate = $this->options['aggregate_transform']($aggregate);
                             }
                             return $aggregate;
+                        })
+                        ->when(isset($this->options['top_results']), function ($coll) {
+                            return $coll
+                                ->sortDesc()
+                                ->take($this->options['top_results'])
+                                ->sortKeys();
                         });
                 } else {
                     $data = collect([]);
