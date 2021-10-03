@@ -28,7 +28,7 @@ class LaravelChart
      * @param $chart_options
      * @throws \Exception
      */
-    public function __construct($chart_options)
+    public function __construct()
     {
         foreach (func_get_args() as $arg) {
             $this->options = $arg;
@@ -170,7 +170,12 @@ class LaravelChart
                     $interval = $this->options['group_by_period'] ?? 'day';
                     $newArr = [];
                     if (!is_null($dates->first()) or !is_null($dates->last())) {
-                        $period = CarbonPeriod::since($dates->first())->$interval()->until($dates->last())
+                        if ($dates->first() === $dates->last()) {
+                            $firstDate = Carbon::createFromDate(($dates->first()))->addDays(-14);
+                            $lastDate = Carbon::createFromDate(($dates->last()))->addDays(14);
+                        }
+
+                        $period = CarbonPeriod::since($firstDate ?? $dates->first())->$interval()->until($lastDate ?? $dates->last())
                             ->filter(function (Carbon $date) use ($data, &$newArr) {
                                 $key = $date->format($this->options['date_format'] ?? 'Y-m-d');
                                 $newArr[$key] = $data[$key] ?? 0;
