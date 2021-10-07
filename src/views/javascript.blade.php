@@ -37,6 +37,12 @@
                         @endforeach
                     ],
                 @endif
+                @if ($options['chart_type'] == 'bar' || $options['chart_type'] == 'line' && isset($dataset['chart_color']) && empty($dataset['color']))
+                    borderColor: 'rgba({{ $dataset['chart_color'] }})',
+                    @if ($options['chart_type'] == 'bar')
+                        backgroundColor: 'rgba({{ $dataset['chart_color'] }}, .2)',
+                    @endif
+                @endif
                 borderWidth: 3
             },
             @endforeach
