@@ -195,7 +195,7 @@ class LaravelChart
                     }
                 }
 
-                $dataset = ['name' => $this->options['chart_title'], 'color' => $condition['color'], 'fill' => $condition['fill'], 'data' => $data];
+                $dataset = ['name' => $this->options['chart_title'], 'color' => $condition['color'], 'chart_color' => $this->options['chart_color'] ?? '', 'fill' => $condition['fill'], 'data' => $data];
             }
 
             return $dataset;
