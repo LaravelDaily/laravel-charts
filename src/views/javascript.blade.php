@@ -13,7 +13,7 @@
         datasets: [
             @foreach ($datasets as $dataset)
             {
-                label: '{{ $dataset['name'] ?? $options['chart_name'] }}',
+                label: '{{ $dataset['name'] ?? $options['chart_title'] }}',
                 data: [
                     @foreach ($dataset['data'] as $group => $result)
                         {!! $result !!},
@@ -27,6 +27,8 @@
                     @endif
                     @if (isset($dataset['color']) && $dataset['color'] != '')
                         borderColor: '{{ $dataset['color'] }}',
+                    @elseif (isset($dataset['chart_color']) && $dataset['chart_color'] != '')
+                        borderColor: 'rgba({{ $dataset['chart_color'] }})',
                     @else
                         borderColor: 'rgba({{ rand(0,255) }}, {{ rand(0,255) }}, {{ rand(0,255) }}, 0.2)',
                     @endif
@@ -36,14 +38,11 @@
                             'rgba({{ rand(0,255) }}, {{ rand(0,255) }}, {{ rand(0,255) }}, 0.2)',
                         @endforeach
                     ],
-                @endif
-                @if ($options['chart_type'] == 'bar' || $options['chart_type'] == 'line' && isset($dataset['chart_color']) && empty($dataset['color']))
+                @elseif ($options['chart_type'] == 'bar' && isset($dataset['chart_color']) && $dataset['chart_color'] != '')
                     borderColor: 'rgba({{ $dataset['chart_color'] }})',
-                    @if ($options['chart_type'] == 'bar')
-                        backgroundColor: 'rgba({{ $dataset['chart_color'] }}, .2)',
-                    @endif
+                    backgroundColor: 'rgba({{ $dataset['chart_color'] }}, .2)',
                 @endif
-                borderWidth: 3
+                borderWidth: 2
             },
             @endforeach
         ]
