@@ -121,7 +121,7 @@ $chart_options = [
     'aggregate_field' => 'amount',
     'aggregate_transform' => function($value) {
         return round($value / 100, 2);
-    }
+    },
     
     'filter_field' => 'transaction_date',
     'filter_days' => 30, // show only transactions for last 30 days
