@@ -152,10 +152,12 @@ $chart_options = [
 - `date_format` (optional) - add the date format, by default: American format Y-m-d
 - `where_raw` (optional) - Condition in multiple consultation situations
 - `chart_height` (optional) - add the height in options, default 300px
-- `date_format_filter_days` (optional) -add the date format for Filter days
-- `withoutGlobalScopes` (optional) -removes global scope restriction from queried model
-- `with_trashed` (optional) -includes soft deleted models
-- `only_trashed` (optional) -only displays soft deleted models
+- `date_format_filter_days` (optional) - add the date format for Filter days
+- `withoutGlobalScopes` (optional) - removes global scope restriction from queried model
+- `with_trashed` (optional) - includes soft deleted models
+- `only_trashed` (optional) - only displays soft deleted models
+- `top_results` (optional, integer) - limit number of results shown, see [Issue #49](https://github.com/LaravelDaily/laravel-charts/issues/49) 
+- `chart_color` (optional, value in rgba, like "0,255,255") - defines the color of the chart
 
 - - - - -
 
@@ -325,6 +327,42 @@ __View__:
 ![Laravel Charts - Users by Names](https://laraveldaily.com/wp-content/uploads/2019/02/Screen-Shot-2019-02-18-at-2.36.50-PM.png)
 
 ![Laravel Charts - Transactions by Dates](https://laraveldaily.com/wp-content/uploads/2019/02/Screen-Shot-2019-02-18-at-2.37.27-PM.png)
+
+---
+
+## Multiple Datasets 
+
+This is a new feature from v0.1.27. You can provide multiple arrays of settings to the `LaravelChart` constructor, and they will be drawn on the same chart.
+
+```
+        $settings1 = [
+            'chart_title'           => 'Users',
+            'chart_type'            => 'line',
+            'report_type'           => 'group_by_date',
+            'model'                 => 'App\Models\User',
+            'group_by_field'        => 'created_at',
+            'group_by_period'       => 'day',
+            'aggregate_function'    => 'count',
+            'filter_field'          => 'created_at',
+            'filter_days'           => '30',
+            'group_by_field_format' => 'Y-m-d H:i:s',
+            'column_class'          => 'col-md-12',
+            'entries_number'        => '5',
+            'translation_key'       => 'user',
+            'continuous_time'       => true,
+        ];
+        $settings2 = [
+            'chart_title'           => 'Projects',
+            'chart_type'            => 'line',
+            'report_type'           => 'group_by_date',
+            'model'                 => 'App\Models\Project',
+            // ... other values identical to $settings1
+        ];
+
+        $chart1 = new LaravelChart($settings1, $settings2);
+```
+
+![Multiple Datasets](https://laraveldaily.com/wp-content/uploads/2021/10/Screenshot-2021-10-08-at-07.30.04.png)
 
 ---
 
