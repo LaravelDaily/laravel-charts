@@ -134,6 +134,7 @@ $chart_options = [
 - `chart_type` (required) - possible values: "line", "bar", "pie";
 - `report_type` (required) - see above, can be `group_by_date`, `group_by_string` or `group_by_relationship`;
 - `model` (required) - name of Eloquent model, where to take the data from;
+- `name` (optional) - just a text title that will be shown as title, otherwise the legend is used;
 - `conditions` (optional, only for `line` chart type) - array of conditions (name + raw condition + color) for multiple datasets;
 - `group_by_field` (required) - name of database field that will be used in `group_by` clause;
 - `group_by_period` (optional, only for `group_by_date` report type) - possible values are "day", "week", "month", "year";
