@@ -146,6 +146,7 @@ $chart_options = [
 - `filter_days` (optional) - see `filter_field` above - show only last `filter_days` days of that field. Example, last __30__ days by `created_at` field.
 - `filter_period` (optional) - another way to filter by field, show only record from last __week__ / __month__ / __year__. Possible values are "week", "month", "year".
 - `continuous_time` (optional) - show all dates on chart, including dates without data.
+- `show_blank_data` (optional) - show date even if the data is blank based on `filter_days`.
 - `range_date_start` (optional) - show data in from a date range by `filter_field`, this is the start date.
 - `range_date_end` (optional) - show data in from a date range by `filter_field`, this is the end date.
 - `field_distinct` (optional) - field name required, it will apply a distinct(fieldname)
