@@ -175,6 +175,19 @@ class LaravelChart
                 }
 
 
+                if (isset($this->options['filter_days']) && @$this->options['show_blank_data']) {
+                    $newData = collect([]);
+
+                    CarbonPeriod::since(now()->subDays($this->options['filter_days']))
+                        ->until(now())
+                        ->forEach(function (Carbon $date) use ($data, &$newData) {
+                            $key = $date->format($this->options['date_format'] ?? 'Y-m-d');
+                            $newData->put($key, $data[$key] ?? 0);
+                        });
+
+                    $data = $newData;
+                }
+
                 if (@$this->options['continuous_time']) {
                     $dates = $data->keys();
                     $interval = $this->options['group_by_period'] ?? 'day';
