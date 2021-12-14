@@ -112,7 +112,11 @@ class LaravelChart
                 }
 
                 if (isset($this->options['withoutGlobalScopes']) && $this->options['withoutGlobalScopes']) {
-                    $collection = $query->withoutGlobalScopes()->get();
+                    $scopesToExclude = is_array($this->options['withoutGlobalScopes'])
+                        ? $this->options['withoutGlobalScopes']
+                        : null;
+
+                    $collection = $query->withoutGlobalScopes($scopesToExclude)->get();
                 } else {
                     $collection = $query->get();
                 }
