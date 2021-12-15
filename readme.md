@@ -12,7 +12,7 @@ If you want to generate a chart above, grouping __users__ records by the month o
 
 __Controller__:
 
-```
+```php
 use LaravelDaily\LaravelCharts\Classes\LaravelChart;
 
 // ...
@@ -32,7 +32,7 @@ return view('home', compact('chart1'));
 
 __View File__
 
-```
+```blade
 @extends('layouts.app')
 
 @section('content')
@@ -66,7 +66,7 @@ __View File__
 
 ## Installation
 
-```
+```sh
 composer require laraveldaily/laravel-charts
 ```
 
@@ -78,13 +78,13 @@ No additional configuration or other parameters yet.
 
 You need to create `LaravelChart` object in your Controller, passing array of options.
 
-```
+```php
 $chart = new LaravelChart($options);
 ```
 
 Then pass it to the View, as a variable:
 
-```
+```php
 return view('dashboard', compact('chart'));
 ```
 
@@ -103,7 +103,7 @@ Currently package support three types of charts/reports:
 
 __Example with all options__
 
-```
+```php
 $chart_options = [
     'chart_title' => 'Transactions by dates',
     'chart_type' => 'line',
@@ -165,7 +165,7 @@ $chart_options = [
 
 ## Example with relationship
 
-```
+```php
 $chart_options = [
     'chart_title' => 'Transactions by user',
     'chart_type' => 'line',
@@ -194,13 +194,13 @@ __Action 1. Render HTML__.
 
 Wherever in your Blade, call this:
 
-```
+```blade
 {!! $chart1->renderHtml() !!}
 ```
 
 It will generate something like this:
 
-```
+```html
 <canvas id="myChart"></canvas>
 ```
 
@@ -208,13 +208,13 @@ __Action 2. Render JavaScript Library__
 
 Package is using Chart.js library, so we need to initialize it somewhere in scripts section:
 
-```
+```blade
 {!! $chart1->renderChartJsLibrary() !!}
 ```
 
 It will generate something like this:
 
-```
+```html
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 ```
 
@@ -222,7 +222,7 @@ __Action 3. Render JavaScript of Specific Chart__
 
 After Chart.js is loaded, launch this:
 
-```
+```blade
 {!! $chart1->renderJs() !!}
 ```
 
@@ -234,7 +234,7 @@ You can show multiple charts on the same page, initialize them separately.
 
 __Controller__:
 
-```
+```php
 public function index()
 {
     $chart_options = [
@@ -282,7 +282,7 @@ public function index()
 
 __View__:
 
-```
+```blade
 @extends('layouts.app')
 
 @section('content')
@@ -336,32 +336,32 @@ __View__:
 
 This is a new feature from v0.1.27. You can provide multiple arrays of settings to the `LaravelChart` constructor, and they will be drawn on the same chart.
 
-```
-        $settings1 = [
-            'chart_title'           => 'Users',
-            'chart_type'            => 'line',
-            'report_type'           => 'group_by_date',
-            'model'                 => 'App\Models\User',
-            'group_by_field'        => 'created_at',
-            'group_by_period'       => 'day',
-            'aggregate_function'    => 'count',
-            'filter_field'          => 'created_at',
-            'filter_days'           => '30',
-            'group_by_field_format' => 'Y-m-d H:i:s',
-            'column_class'          => 'col-md-12',
-            'entries_number'        => '5',
-            'translation_key'       => 'user',
-            'continuous_time'       => true,
-        ];
-        $settings2 = [
-            'chart_title'           => 'Projects',
-            'chart_type'            => 'line',
-            'report_type'           => 'group_by_date',
-            'model'                 => 'App\Models\Project',
-            // ... other values identical to $settings1
-        ];
+```php
+$settings1 = [
+    'chart_title'           => 'Users',
+    'chart_type'            => 'line',
+    'report_type'           => 'group_by_date',
+    'model'                 => 'App\Models\User',
+    'group_by_field'        => 'created_at',
+    'group_by_period'       => 'day',
+    'aggregate_function'    => 'count',
+    'filter_field'          => 'created_at',
+    'filter_days'           => '30',
+    'group_by_field_format' => 'Y-m-d H:i:s',
+    'column_class'          => 'col-md-12',
+    'entries_number'        => '5',
+    'translation_key'       => 'user',
+    'continuous_time'       => true,
+];
+$settings2 = [
+    'chart_title'           => 'Projects',
+    'chart_type'            => 'line',
+    'report_type'           => 'group_by_date',
+    'model'                 => 'App\Models\Project',
+    // ... other values identical to $settings1
+];
 
-        $chart1 = new LaravelChart($settings1, $settings2);
+$chart1 = new LaravelChart($settings1, $settings2);
 ```
 
 ![Multiple Datasets](https://laraveldaily.com/wp-content/uploads/2021/10/Screenshot-2021-10-08-at-07.30.04.png)
