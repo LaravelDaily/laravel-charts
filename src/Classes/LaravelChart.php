@@ -141,7 +141,7 @@ class LaravelChart
                                 return $entry->{$this->options['group_by_field']}
                                     ->format($this->options['date_format'] ?? self::GROUP_PERIODS[$this->options['group_by_period']]);
                             } else {
-                                if ($entry->{$this->options['group_by_field']} && $this->options['group_by_field_format']) {
+                                if ($entry->{$this->options['group_by_field']} && isset($this->options['group_by_field_format'])) {
                                     return \Carbon\Carbon::createFromFormat(
                                         $this->options['group_by_field_format'],
                                         $entry->{$this->options['group_by_field']}
