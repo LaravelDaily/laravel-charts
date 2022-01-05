@@ -66,7 +66,7 @@ class LaravelChart
                         return $query->where(
                             $this->options['filter_field'],
                             '>=',
-                            now()->subDays($this->options['filter_days'])->format($this->options['date_format_filter_days'] ?? 'Y-m-d H:00')
+                            now()->subDays($this->options['filter_days'])->format($this->options['date_format_filter_days'] ?? 'Y-m-d')
                         );
                     } else if (isset($this->options['filter_period'])) {
                         switch ($this->options['filter_period']) {
@@ -145,7 +145,7 @@ class LaravelChart
                                 return $entry->{$this->options['group_by_field']}
                                     ->format($this->options['date_format'] ?? self::GROUP_PERIODS[$this->options['group_by_period']]);
                             } else {
-                                if ($entry->{$this->options['group_by_field']} && isset($this->options['group_by_field_format'])) {
+                                if ($entry->{$this->options['group_by_field']} && $this->options['group_by_field_format']) {
                                     return \Carbon\Carbon::createFromFormat(
                                         $this->options['group_by_field_format'],
                                         $entry->{$this->options['group_by_field']}
