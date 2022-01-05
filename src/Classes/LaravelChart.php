@@ -213,7 +213,7 @@ class LaravelChart
 
                         $period = CarbonPeriod::since($firstDate ?? $dates->first())->$interval()->until($lastDate ?? $dates->last())
                             ->filter(function (Carbon $date) use ($data, &$newArr) {
-                                $key = $date->format($this->options['date_format'] ?? 'Y-m-d H:00');
+                                $key = $date->format($this->options['date_format'] ?? self::GROUP_PERIODS[$this->options['group_by_period']] ?? 'Y-m-d');
                                 $newArr[$key] = $data[$key] ?? 0;
                             })
                             ->toArray();
