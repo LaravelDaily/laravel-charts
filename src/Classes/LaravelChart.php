@@ -17,6 +17,7 @@ class LaravelChart
      * Group Periods
      */
     const GROUP_PERIODS = [
+        'hour'   => 'Y-m-d H:00',
         'day'   => 'Y-m-d',
         'week'  => 'Y-W',
         'month' => 'Y-m',
@@ -65,18 +66,21 @@ class LaravelChart
                         return $query->where(
                             $this->options['filter_field'],
                             '>=',
-                            now()->subDays($this->options['filter_days'])->format($this->options['date_format_filter_days'] ?? 'Y-m-d')
+                            now()->subDays($this->options['filter_days'])->format($this->options['date_format_filter_days'] ?? 'Y-m-d H:00')
                         );
                     } else if (isset($this->options['filter_period'])) {
                         switch ($this->options['filter_period']) {
+                            case 'hour':
+                                $start = date('Y-m-d H:00', strtotime('last Monday'));
+                                break;
                             case 'week':
-                                $start = date('Y-m-d', strtotime('last Monday'));
+                                $start = date('Y-m-d', strtotime('last Monday')) . ' 00:00';
                                 break;
                             case 'month':
-                                $start = date('Y-m') . '-01';
+                                $start = date('Y-m') . '-01 00:00';
                                 break;
                             case 'year':
-                                $start = date('Y') . '-01-01';
+                                $start = date('Y') . '-01-01 00:00';
                                 break;
                         }
                         if (isset($start)) {
@@ -209,7 +213,7 @@ class LaravelChart
 
                         $period = CarbonPeriod::since($firstDate ?? $dates->first())->$interval()->until($lastDate ?? $dates->last())
                             ->filter(function (Carbon $date) use ($data, &$newArr) {
-                                $key = $date->format($this->options['date_format'] ?? 'Y-m-d');
+                                $key = $date->format($this->options['date_format'] ?? 'Y-m-d H:00');
                                 $newArr[$key] = $data[$key] ?? 0;
                             })
                             ->toArray();
@@ -237,7 +241,7 @@ class LaravelChart
             'report_type'           => 'required|in:group_by_date,group_by_string,group_by_relationship',
             'model'                 => 'required|bail',
             'group_by_field'        => 'required|bail',
-            'group_by_period'       => 'in:day,week,month,year|bail',
+            'group_by_period'       => 'in:hour,day,week,month,year|bail',
             'aggregate_function'    => 'in:count,sum,avg|bail',
             'chart_type'            => 'required|in:line,bar,pie|bail',
             'filter_days'           => 'integer',
@@ -247,7 +251,7 @@ class LaravelChart
         $messages = [
             'required' => 'please specify :attribute option',
             'report_type.in' => 'report_type option should contain one of these values - group_by_date/group_by_string',
-            'group_by_period.in' => 'group_by option should contain one of these values - day/week/month/year',
+            'group_by_period.in' => 'group_by option should contain one of these values - hour/day/week/month/year',
             'aggregate_function.in' => 'number_function option should contain one of these values - count/sum/avg',
             'chart_type.in' => 'chart_type option should contain one of these values - line/bar/pie',
             'filter_period.in' => 'filter_period option should contain one of these values - week/month/year',
