@@ -121,6 +121,14 @@ class LaravelChart
                     $collection = $query->get();
                 }
 
+                if (count($collection) && Str::contains($this->options['group_by_field'], '.')) {
+                    $relation = Str::beforeLast($this->options['group_by_field'], '.');
+
+                    if ($collection->first()->isRelation($relation)) {
+                        $collection->load($relation);
+                    }
+                }
+
                 if ($this->options['report_type'] != 'group_by_relationship') {
                     $collection->where($this->options['group_by_field'], '!=', '');
                 }
