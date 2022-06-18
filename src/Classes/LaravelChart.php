@@ -4,6 +4,7 @@ namespace LaravelDaily\LaravelCharts\Classes;
 
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -121,7 +122,8 @@ class LaravelChart
                     $collection = $query->get();
                 }
 
-                if (count($collection) && Str::contains($this->options['group_by_field'], '.')) {
+                $isNested = Str::contains($this->options['group_by_field'], '.');
+                if ($collection->isNotEmpty() && $isNested) {
                     $relation = Str::beforeLast($this->options['group_by_field'], '.');
 
                     if ($collection->first()->isRelation($relation)) {
@@ -133,11 +135,20 @@ class LaravelChart
                     $collection->where($this->options['group_by_field'], '!=', '');
                 }
 
-                if (count($collection)) {
+                if ($collection->isNotEmpty()) {
+                    $relation = $isNested ? Str::before($this->options['group_by_field'], '.') : null;
+                    $field = Str::after($this->options['group_by_field'], '.');
+
                     $data = $collection
+                        ->map(function ($entry) use ($relation) {
+                            $data = $relation ? $entry->{$relation} : $entry;
+
+                            return $data instanceof Collection ? $data : collect([$data]);
+                        })
+                        ->flatten(1)
                         ->sortBy($this->options['group_by_field'])
-                        ->groupBy(function ($entry) {
-                            $entryField = data_get($entry, $this->options['group_by_field']);
+                        ->groupBy(function ($entry) use ($field) {
+                            $entryField = data_get($entry, $field);
 
                             if ($this->options['report_type'] == 'group_by_string') {
                                 return $entryField;
@@ -308,7 +319,8 @@ class LaravelChart
     /**
      * @return array
      */
-    public function getDatasets() {
+    public function getDatasets()
+    {
         return $this->datasets;
     }
 }
