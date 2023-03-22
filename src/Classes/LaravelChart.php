@@ -219,6 +219,15 @@ class LaravelChart
 
                 $dataset = ['name' => $this->options['chart_title'], 'color' => $condition['color'], 'chart_color' => $this->options['chart_color'] ?? '', 'fill' => $condition['fill'], 'data' => $data];
             }
+            
+            if(!empty($this->options['labels'])) {
+                foreach($this->options['labels'] as $key => $val) {
+                    if(array_key_exists($key, $data->toArray())) {
+                        $data[$val] = $data[$key];
+                        unset($data[$key]);
+                    }
+                }
+            }
 
             return $dataset;
         } catch (\Error $ex) {
