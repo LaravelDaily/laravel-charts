@@ -160,6 +160,7 @@ $chart_options = [
 - `only_trashed` (optional) - only displays soft deleted models
 - `top_results` (optional, integer) - limit number of results shown, see [Issue #49](https://github.com/LaravelDaily/laravel-charts/issues/49) 
 - `chart_color` (optional, value in rgba, like "0,255,255") - defines the color of the chart
+- `labels` (optional, array with key and value) - defines key value array mapping old and new values
 
 - - - - -
 
