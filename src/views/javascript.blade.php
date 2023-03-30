@@ -19,6 +19,9 @@
                         {!! $result !!},
                     @endforeach
                 ],
+                @if($dataset['hidden'] === true)
+                    hidden: true,
+                @endif
                 @if ($options['chart_type'] == 'line')
                     @if (isset($dataset['fill']) && $dataset['fill'] != '')
                         fill: '{{ $dataset['fill'] }}',
@@ -35,7 +38,11 @@
                 @elseif ($options['chart_type'] == 'pie')
                     backgroundColor: [
                         @foreach ($dataset['data'] as $group => $result)
-                            'rgba({{ rand(0,255) }}, {{ rand(0,255) }}, {{ rand(0,255) }}, 0.2)',
+                            @if (isset($dataset['chart_color'][$group]) && $dataset['chart_color'][$group] != '')
+                                'rgba({{ $dataset['chart_color'][$group] }})',
+                            @else
+                                'rgba({{ rand(0,255) }}, {{ rand(0,255) }}, {{ rand(0,255) }}, 0.2)',
+                            @endif
                         @endforeach
                     ],
                 @elseif ($options['chart_type'] == 'bar' && isset($dataset['chart_color']) && $dataset['chart_color'] != '')

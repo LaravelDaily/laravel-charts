@@ -217,7 +217,14 @@ class LaravelChart
                     }
                 }
 
-                $dataset = ['name' => $this->options['chart_title'], 'color' => $condition['color'], 'chart_color' => $this->options['chart_color'] ?? '', 'fill' => $condition['fill'], 'data' => $data];
+                $dataset = [
+                    'name' => $this->options['chart_title'], 
+                    'color' => $condition['color'], 
+                    'chart_color' => $this->options['chart_color'] ?? '', 
+                    'fill' => $condition['fill'], 
+                    'data' => $data, 
+                    'hidden' => $this->options['hidden'] ?? false
+                ];
             }
             
             if(!empty($this->options['labels'])) {
@@ -251,6 +258,7 @@ class LaravelChart
             'chart_type'            => 'required|in:line,bar,pie|bail',
             'filter_days'           => 'integer',
             'filter_period'         => 'in:week,month,year',
+            'hidden'                => 'boolean'
         ];
 
         $messages = [
@@ -272,6 +280,7 @@ class LaravelChart
             'filter_days'           => 'filter_days',
             'filter_period'         => 'filter_period',
             'field_distinct'        => 'field_distinct',
+            'hidden'                => 'hidden'
         ];
 
         $validator = Validator::make($options, $rules, $messages, $attributes);
