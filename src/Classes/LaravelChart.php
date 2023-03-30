@@ -251,6 +251,7 @@ class LaravelChart
             'chart_type'            => 'required|in:line,bar,pie|bail',
             'filter_days'           => 'integer',
             'filter_period'         => 'in:week,month,year',
+            'hidden'                => 'boolean'
         ];
 
         $messages = [
@@ -272,6 +273,7 @@ class LaravelChart
             'filter_days'           => 'filter_days',
             'filter_period'         => 'filter_period',
             'field_distinct'        => 'field_distinct',
+            'hidden'                => 'hidden'
         ];
 
         $validator = Validator::make($options, $rules, $messages, $attributes);

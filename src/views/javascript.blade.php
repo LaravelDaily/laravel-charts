@@ -19,6 +19,9 @@
                         {!! $result !!},
                     @endforeach
                 ],
+                @if($dataset['hidden'] === true)
+                    hidden: true,
+                @endif
                 @if ($options['chart_type'] == 'line')
                     @if (isset($dataset['fill']) && $dataset['fill'] != '')
                         fill: '{{ $dataset['fill'] }}',
