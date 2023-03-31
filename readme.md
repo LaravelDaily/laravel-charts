@@ -138,6 +138,7 @@ $chart_options = [
 - `conditions` (optional, only for `line` chart type) - array of conditions (name + raw condition + color) for multiple datasets;
 - `group_by_field` (required) - name of database field that will be used in `group_by` clause;
 - `group_by_period` (optional, only for `group_by_date` report type) - possible values are "day", "week", "month", "year";
+- `group_by_function` (optional) - use the given function (example: strtolower) in combination with group_by_field to group by case insensitive
 - `relationship_name` (optional, only for `group_by_relationship` report type) - the name of model's method that contains `belongsTo` relationship.
 - `aggregate_function` (optional) - you can view not only amount of records, but also their `SUM()` or `AVG()`. Possible values: "count" (default), "avg", "sum".
 - `aggregate_field` (optional) - see `aggregate_function` above, the name of the field to use in `SUM()` or `AVG()` functions. Irrelevant for `COUNT()`.

@@ -129,6 +129,10 @@ class LaravelChart
                     $data = $collection
                         ->sortBy($this->options['group_by_field'])
                         ->groupBy(function ($entry) {
+                            if (isset($this->options['group_by_function'])) {
+                                return $this->options['group_by_function']($entry->{$this->options['group_by_field']});
+                            }
+
                             if ($this->options['report_type'] == 'group_by_string') {
                                 return $entry->{$this->options['group_by_field']};
                             } else if ($this->options['report_type'] == 'group_by_relationship') {
