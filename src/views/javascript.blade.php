@@ -65,7 +65,10 @@
                 yAxes: [{
                     ticks: {
                         beginAtZero:true
-                    }
+                    },
+                    @if($options['chart_type'] == 'bar' && $dataset['stacked'] == true)
+                        stacked: true
+                    @endif
                 }]
             },
         @endif
