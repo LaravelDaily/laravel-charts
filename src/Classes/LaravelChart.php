@@ -223,7 +223,8 @@ class LaravelChart
                     'chart_color' => $this->options['chart_color'] ?? '', 
                     'fill' => $condition['fill'], 
                     'data' => $data, 
-                    'hidden' => $this->options['hidden'] ?? false
+                    'hidden' => $this->options['hidden'] ?? false,
+                    'stacked' => $this->options['stacked'] ?? false,
                 ];
             }
             
@@ -258,7 +259,8 @@ class LaravelChart
             'chart_type'            => 'required|in:line,bar,pie|bail',
             'filter_days'           => 'integer',
             'filter_period'         => 'in:week,month,year',
-            'hidden'                => 'boolean'
+            'hidden'                => 'boolean',
+            'stacked'               => 'boolean',
         ];
 
         $messages = [
@@ -280,7 +282,8 @@ class LaravelChart
             'filter_days'           => 'filter_days',
             'filter_period'         => 'filter_period',
             'field_distinct'        => 'field_distinct',
-            'hidden'                => 'hidden'
+            'hidden'                => 'hidden',
+            'stacked'               => 'stacked',
         ];
 
         $validator = Validator::make($options, $rules, $messages, $attributes);

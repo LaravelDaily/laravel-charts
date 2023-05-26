@@ -161,6 +161,8 @@ $chart_options = [
 - `top_results` (optional, integer) - limit number of results shown, see [Issue #49](https://github.com/LaravelDaily/laravel-charts/issues/49) 
 - `chart_color` (optional, value in rgba, like "0,255,255") - defines the color of the chart
 - `labels` (optional, array with key and value) - defines key value array mapping old and new values
+- `hidden` (optional, boolean) hides the current dataset. Useful when having multiple datasets in one chart
+- `stacked` (optional, boolean, only for bar chart) stacks the chart data when dates or strings match instead of showing it next to eachother  
 
 - - - - -
 
