@@ -66,7 +66,7 @@
                     ticks: {
                         beginAtZero:true
                     },
-                    @if($options['chart_type'] == 'bar' && $options['stacked'] == true)
+                    @if($options['chart_type'] == 'bar' && isset($options['stacked']) && $options['stacked'] == true)
                         stacked: true
                     @endif
                 }]
