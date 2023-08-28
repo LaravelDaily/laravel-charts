@@ -33,6 +33,9 @@ class LaravelChart
         foreach (func_get_args() as $arg) {
             $this->options = $arg;
             $this->options['chart_name'] = strtolower(Str::slug($arg['chart_title'], '_'));
+            if ($this->options['chart_name'] == '') {
+                $this->options['chart_name'] = $arg['chart_title'];
+            }
             $this->datasets[] = $this->prepareData();
         }
     }
