@@ -256,7 +256,7 @@ class LaravelChart
             'group_by_field'        => 'required|bail',
             'group_by_period'       => 'in:day,week,month,year|bail',
             'aggregate_function'    => 'in:count,sum,avg|bail',
-            'chart_type'            => 'required|in:line,bar,pie|bail',
+            'chart_type'            => 'required|in:line,bar,pie,doughnut|bail',
             'filter_days'           => 'integer',
             'filter_period'         => 'in:week,month,year',
             'hidden'                => 'boolean',
@@ -314,7 +314,7 @@ class LaravelChart
      */
     public function renderChartJsLibrary()
     {
-        return '<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>';
+        return '<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script><script src="https://cdn.jsdelivr.net/gh/emn178/chartjs-plugin-labels/src/chartjs-plugin-labels.js"></script>';
     }
     
     /**

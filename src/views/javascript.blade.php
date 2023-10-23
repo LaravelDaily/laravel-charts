@@ -35,7 +35,7 @@
                     @else
                         borderColor: 'rgba({{ rand(0,255) }}, {{ rand(0,255) }}, {{ rand(0,255) }}, 0.2)',
                     @endif
-                @elseif ($options['chart_type'] == 'pie')
+                @elseif ($options['chart_type'] == 'pie' || $options['chart_type'] == 'doughnut')
                     backgroundColor: [
                         @foreach ($dataset['data'] as $group => $result)
                             @if (isset($dataset['chart_color'][$group]) && $dataset['chart_color'][$group] != '')
@@ -55,11 +55,26 @@
         ]
     },
     options: {
+        plugins: {
+            @if ($options['chart_type'] == 'pie' || $options['chart_type'] == 'doughnut')
+            labels: [
+                {
+                  render: 'percentage'
+                }
+            ]
+            @elseif ($options['chart_type'] == 'bar')
+            labels: [
+                {
+                  render: 'value'
+                }
+            ]
+            @endif
+        },
         tooltips: {
             mode: 'point'
         },
         height: '{{ $options['chart_height'] ?? "300px" }}',
-        @if ($options['chart_type'] != 'pie')
+        @if ($options['chart_type'] != 'pie' && $options['chart_type'] != 'doughnut')
             scales: {
                 xAxes: [],
                 yAxes: [{

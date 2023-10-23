@@ -131,7 +131,7 @@ $chart_options = [
 ```
 
 - `chart_title` (required) - just a text title that will be shown as legend;
-- `chart_type` (required) - possible values: "line", "bar", "pie";
+- `chart_type` (required) - possible values: "line", "bar", "pie", "doughnut";
 - `report_type` (required) - see above, can be `group_by_date`, `group_by_string` or `group_by_relationship`;
 - `model` (required) - name of Eloquent model, where to take the data from;
 - `name` (optional) - just a text title that will be shown as title, otherwise the legend is used;
